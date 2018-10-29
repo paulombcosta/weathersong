@@ -12,7 +12,7 @@ import java.util.*
 class SpotifyAuthService @Autowired constructor(val spotifyAuthClient: SpotifyAuthClient) {
 
     companion object {
-        const val GRANT_CLIENT = "grant_client"
+        const val GRANT_CLIENT = "client_credentials"
     }
 
     @Value("\${spotify.client.id}")
@@ -22,7 +22,7 @@ class SpotifyAuthService @Autowired constructor(val spotifyAuthClient: SpotifyAu
     lateinit var spotifyClientSecret: String
 
     fun authenticate(): Single<SpotifyAuthAPIResponse> {
-        val authString = "$spotifyAuthClient:$spotifyClientSecret"
+        val authString = "$spotifyClientId:$spotifyClientSecret"
         val auth = Base64.getEncoder().encodeToString(authString.toByteArray())
         return spotifyAuthClient.authenticate(GRANT_CLIENT, "Basic $auth")
     }

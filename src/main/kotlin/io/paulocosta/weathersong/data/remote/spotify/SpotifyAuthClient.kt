@@ -8,7 +8,7 @@ import retrofit2.http.POST
 
 interface SpotifyAuthClient {
 
-    @POST("/token")
+    @POST("/api/token")
     @FormUrlEncoded
     fun authenticate(@Field("grant_type") grantType: String,
                      @Header("Authorization") authorization: String) : Single<SpotifyAuthAPIResponse>
