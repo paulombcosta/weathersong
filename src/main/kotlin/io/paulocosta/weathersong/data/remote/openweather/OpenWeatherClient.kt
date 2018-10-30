@@ -7,9 +7,14 @@ import retrofit2.http.Query
 interface OpenWeatherClient {
 
     @GET("weather")
-    fun getWeatherInfoByCityName(@Query("q") name: String): Single<OpenWeatherAPIResponse>
+    fun getWeatherInfoByCityName(
+            @Query("q") name: String,
+            @Query("units") units: String = "metric"): Single<OpenWeatherAPIResponse>
 
     @GET("weather")
-    fun getWeatherInfoByLatLong(@Query("lat") lat: Double, @Query("lng") lng: Double): Single<OpenWeatherAPIResponse>
+    fun getWeatherInfoByLatLong(
+            @Query("lat") lat: Double,
+            @Query("lng") lng: Double,
+            @Query("units") units: String = "metric"): Single<OpenWeatherAPIResponse>
 
 }
