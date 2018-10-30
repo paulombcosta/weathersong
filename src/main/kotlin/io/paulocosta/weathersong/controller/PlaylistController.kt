@@ -4,8 +4,8 @@ import io.paulocosta.weathersong.data.persisted.SpotifyAuthTokenRepository
 import io.paulocosta.weathersong.data.remote.ApiResponse
 import io.paulocosta.weathersong.data.remote.SuccessfulDataApiResponse
 import io.paulocosta.weathersong.data.remote.openweather.OpenWeatherAPIResponse
-import io.paulocosta.weathersong.data.remote.openweather.OpenWeatherClient
-import io.paulocosta.weathersong.data.remote.spotify.SpotifyPlaylistClient
+import io.paulocosta.weathersong.data.remote.openweather.OpenWeatherApi
+import io.paulocosta.weathersong.data.remote.spotify.SpotifyPlaylistApi
 import io.paulocosta.weathersong.service.SpotifyAuthService
 import io.reactivex.Single
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class PlaylistController @Autowired constructor(
-        val openWeatherClient: OpenWeatherClient,
+        val openWeatherApi: OpenWeatherApi,
         val spotifyAuthService: SpotifyAuthService,
         val spotifyAuthTokenRepository: SpotifyAuthTokenRepository,
-        val spotifyPlaylistClient: SpotifyPlaylistClient) {
+        val spotifyPlaylistApi: SpotifyPlaylistApi) {
 
     @GetMapping("/playlist")
     fun hello(): Single<OpenWeatherAPIResponse> {
-        return openWeatherClient.getWeatherInfoByCityName("London")
+        return openWeatherApi.getWeatherInfoByCityName("London")
     }
 
     @GetMapping("/auth")
@@ -38,7 +38,7 @@ class PlaylistController @Autowired constructor(
 
     @GetMapping("/playlists")
     fun playlists(): Single<ApiResponse> {
-        return spotifyPlaylistClient.getPlaylists("classical")
+        return spotifyPlaylistApi.getPlaylists("classical")
                 .map {
                     SuccessfulDataApiResponse(statusCode = 200, data = it)
                 }

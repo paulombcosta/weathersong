@@ -12,7 +12,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.jackson.JacksonConverterFactory
 
 @Component
-class SpotifyClientProvider {
+class SpotifyApiProvider {
 
     @Value("\${spotify.auth.endpoint}")
     lateinit var spotifyAuthEndpoint: String
@@ -57,13 +57,13 @@ class SpotifyClientProvider {
     }
 
     @Bean
-    fun provideSpotifyAuthClient(): SpotifyAuthClient {
-        return provideRetrofitSpotifyAuth().create(SpotifyAuthClient::class.java)
+    fun provideSpotifyAuthClient(): SpotifyAuthApi {
+        return provideRetrofitSpotifyAuth().create(SpotifyAuthApi::class.java)
     }
 
     @Bean
-    fun providePlaylistsClient(): SpotifyPlaylistClient {
-        return provideAPIRetrofit().create(SpotifyPlaylistClient::class.java)
+    fun providePlaylistsClient(): SpotifyPlaylistApi {
+        return provideAPIRetrofit().create(SpotifyPlaylistApi::class.java)
     }
 
 

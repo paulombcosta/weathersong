@@ -5,7 +5,7 @@ import io.paulocosta.weathersong.data.persisted.SpotifyAuthTokenRepository
 import io.paulocosta.weathersong.data.remote.ApiResponse
 import io.paulocosta.weathersong.data.remote.SuccessfulEmptyResponse
 import io.paulocosta.weathersong.data.remote.spotify.SpotifyAuthAPIResponse
-import io.paulocosta.weathersong.data.remote.spotify.SpotifyAuthClient
+import io.paulocosta.weathersong.data.remote.spotify.SpotifyAuthApi
 import io.reactivex.Single
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -14,7 +14,7 @@ import java.util.*
 
 @Service
 class SpotifyAuthService @Autowired constructor(
-        val spotifyAuthClient: SpotifyAuthClient,
+        val spotifyAuthApi: SpotifyAuthApi,
         val spotifyAuthTokenRepository: SpotifyAuthTokenRepository) {
 
     companion object {
@@ -30,7 +30,7 @@ class SpotifyAuthService @Autowired constructor(
     fun authenticate(): Single<ApiResponse> {
         val authString = "$spotifyClientId:$spotifyClientSecret"
         val auth = Base64.getEncoder().encodeToString(authString.toByteArray())
-        return spotifyAuthClient.authenticate(GRANT_CLIENT, "Basic $auth")
+        return spotifyAuthApi.authenticate(GRANT_CLIENT, "Basic $auth")
                 .flatMap {
                     persistAuthToken(it)
                     Single.just(SuccessfulEmptyResponse(200))

@@ -11,7 +11,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.jackson.JacksonConverterFactory
 
 @Component
-class OpenWeatherClientProvider {
+class OpenWeatherApiProvider {
 
     @Autowired
     lateinit var interceptor: OpenWeatherAPITokenInterceptor
@@ -34,8 +34,8 @@ class OpenWeatherClientProvider {
     }
 
     @Bean
-    fun provideOpenWeatherClient(): OpenWeatherClient {
-        return provideRetrofitOpenWeather().create(OpenWeatherClient::class.java)
+    fun provideOpenWeatherClient(): OpenWeatherApi {
+        return provideRetrofitOpenWeather().create(OpenWeatherApi::class.java)
     }
 
     @Bean
