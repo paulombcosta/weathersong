@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 data class TracksResponse(val items: List<Item>)
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class Item(val item: TrackResponse)
+data class Item(val track: TrackResponse)
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class TrackResponse(val name: String)
