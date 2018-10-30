@@ -1,3 +1,3 @@
 package io.paulocosta.weathersong.data.model
 
-data class Playlist(val tracks: List<Track>)
+data class Playlist(var id: String, var tracks: List<Track>)
