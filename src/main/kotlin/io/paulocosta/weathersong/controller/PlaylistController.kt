@@ -30,7 +30,8 @@ class PlaylistController @Autowired constructor(
 
     @GetMapping("/auth")
     fun auth(): Single<ApiResponse> {
-        return spotifyAuthService.authenticate()
+        return spotifyAuthService.getAuthToken()
+                .map { SuccessfulDataApiResponse(statusCode = 200, data = it) }
     }
 
     @GetMapping("/persistence")

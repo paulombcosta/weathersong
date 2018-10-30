@@ -2,9 +2,6 @@ package io.paulocosta.weathersong.service
 
 import io.paulocosta.weathersong.data.persisted.SpotifyAuthToken
 import io.paulocosta.weathersong.data.persisted.SpotifyAuthTokenRepository
-import io.paulocosta.weathersong.data.remote.ApiResponse
-import io.paulocosta.weathersong.data.remote.SuccessfulEmptyResponse
-import io.paulocosta.weathersong.data.remote.spotify.SpotifyAuthAPIResponse
 import io.paulocosta.weathersong.data.remote.spotify.SpotifyAuthApi
 import io.reactivex.Single
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,23 +24,31 @@ class SpotifyAuthService @Autowired constructor(
     @Value("\${spotify.client.secret}")
     lateinit var spotifyClientSecret: String
 
-    fun authenticate(): Single<ApiResponse> {
-        val authString = "$spotifyClientId:$spotifyClientSecret"
-        val auth = Base64.getEncoder().encodeToString(authString.toByteArray())
-        return spotifyAuthApi.authenticate(GRANT_CLIENT, "Basic $auth")
+    fun getAuthToken(): Single<SpotifyAuthToken> {
+        return retrieveAuthToken()
                 .flatMap {
-                    persistAuthToken(it)
-                    Single.just(SuccessfulEmptyResponse(200))
+                    if (it.isPresent) {
+                        Single.just(it.get())
+                    } else {
+                        authenticate()
+                    }
                 }
     }
 
-    private fun persistAuthToken(spotifyAuthAPIResponse: SpotifyAuthAPIResponse) {
-        spotifyAuthTokenRepository.save(
-                SpotifyAuthToken(
-                        SpotifyAuthTokenRepository.KEY,
-                        spotifyAuthAPIResponse.accessToken
-                )
-        )
+    fun authenticate(): Single<SpotifyAuthToken> {
+        val authString = "$spotifyClientId:$spotifyClientSecret"
+        val auth = Base64.getEncoder().encodeToString(authString.toByteArray())
+        return spotifyAuthApi.authenticate(GRANT_CLIENT, "Basic $auth")
+                .map { SpotifyAuthToken(SpotifyAuthTokenRepository.KEY, it.accessToken) }
+                .doAfterSuccess(this::persistAuthToken)
+    }
+
+    private fun persistAuthToken(spotifyAuthToken: SpotifyAuthToken) {
+        spotifyAuthTokenRepository.save(spotifyAuthToken)
+    }
+
+    private fun retrieveAuthToken(): Single<Optional<SpotifyAuthToken>> {
+        return Single.just(spotifyAuthTokenRepository.findById(SpotifyAuthTokenRepository.KEY))
     }
 
 }
