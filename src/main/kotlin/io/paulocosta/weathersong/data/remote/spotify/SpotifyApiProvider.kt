@@ -62,7 +62,12 @@ class SpotifyApiProvider {
     }
 
     @Bean
-    fun providePlaylistsClient(): SpotifyPlaylistApi {
+    fun providePlaylistsCateogoryClient(): SpotifyPlaylistCategoryApi {
+        return provideAPIRetrofit().create(SpotifyPlaylistCategoryApi::class.java)
+    }
+
+    @Bean
+    fun providePlaylistClient(): SpotifyPlaylistApi {
         return provideAPIRetrofit().create(SpotifyPlaylistApi::class.java)
     }
 

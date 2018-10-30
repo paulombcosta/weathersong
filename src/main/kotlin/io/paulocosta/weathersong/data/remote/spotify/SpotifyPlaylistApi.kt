@@ -6,7 +6,7 @@ import retrofit2.http.Path
 
 interface SpotifyPlaylistApi {
 
-    @GET("v1/browse/categories/{category_id}/playlists")
-    fun getPlaylists(@Path("category_id") categoryId: String): Single<SpotifyPlaylistCategoryAPIResponse>
+    @GET("/v1/playlists/{playlist_id}")
+    fun getPlaylist(@Path("playlist_id") playlistId: String): Single<SpotifyPlaylistApiResponse>
 
 }
