@@ -2,7 +2,6 @@ package io.paulocosta.weathersong.controller
 
 import io.paulocosta.weathersong.data.remote.ApiResponse
 import io.paulocosta.weathersong.data.remote.SuccessfulDataApiResponse
-import io.paulocosta.weathersong.data.remote.SuccessfulEmptyResponse
 import io.paulocosta.weathersong.service.SpotifyWeatherPlaylistService
 import io.reactivex.Single
 import org.springframework.beans.factory.annotation.Autowired

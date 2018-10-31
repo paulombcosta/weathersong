@@ -1,6 +1,6 @@
 package io.paulocosta.weathersong.data.remote.spotify
 
-import io.paulocosta.weathersong.data.persisted.SpotifyAuthTokenRepository
+import io.paulocosta.weathersong.data.cache.SpotifyAuthTokenRepository
 import okhttp3.Interceptor
 import okhttp3.Response
 import org.springframework.beans.factory.annotation.Autowired

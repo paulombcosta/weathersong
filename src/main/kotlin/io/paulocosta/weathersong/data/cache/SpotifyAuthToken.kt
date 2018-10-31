@@ -1,4 +1,4 @@
-package io.paulocosta.weathersong.data.persisted
+package io.paulocosta.weathersong.data.cache
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.keyvalue.annotation.KeySpace

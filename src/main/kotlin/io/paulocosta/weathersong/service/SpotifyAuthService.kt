@@ -1,9 +1,10 @@
 package io.paulocosta.weathersong.service
 
-import io.paulocosta.weathersong.data.persisted.SpotifyAuthToken
-import io.paulocosta.weathersong.data.persisted.SpotifyAuthTokenRepository
+import io.paulocosta.weathersong.data.cache.SpotifyAuthToken
+import io.paulocosta.weathersong.data.cache.SpotifyAuthTokenRepository
 import io.paulocosta.weathersong.data.remote.spotify.SpotifyAuthApi
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -24,6 +25,8 @@ class SpotifyAuthService @Autowired constructor(
     @Value("\${spotify.client.secret}")
     lateinit var spotifyClientSecret: String
 
+    val authScheduler = Schedulers.single()
+
     fun getAuthToken(): Single<SpotifyAuthToken> {
         return retrieveAuthToken()
                 .flatMap {
@@ -39,6 +42,7 @@ class SpotifyAuthService @Autowired constructor(
         val authString = "$spotifyClientId:$spotifyClientSecret"
         val auth = Base64.getEncoder().encodeToString(authString.toByteArray())
         return spotifyAuthApi.authenticate(GRANT_CLIENT, "Basic $auth")
+                .subscribeOn(authScheduler)
                 .map { SpotifyAuthToken(SpotifyAuthTokenRepository.KEY, it.accessToken) }
                 .doAfterSuccess(this::persistAuthToken)
     }

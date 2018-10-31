@@ -1,5 +1,6 @@
 package io.paulocosta.weathersong.data.remote.spotify
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.springframework.beans.factory.annotation.Value
@@ -40,6 +41,7 @@ class SpotifyApiProvider {
     fun provideObjectMapper(): ObjectMapper {
         val mapper = ObjectMapper()
         mapper.registerKotlinModule()
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         return mapper
     }
 
