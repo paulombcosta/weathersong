@@ -6,15 +6,30 @@ import io.paulocosta.weathersong.data.remote.spotify.SpotifyPlaylistCategoryApi
 import io.reactivex.Single
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class SpotifyPlaylistCategoryService @Autowired constructor(
-        val spotifyPlaylistCategoryApi: SpotifyPlaylistCategoryApi
+        val spotifyPlaylistCategoryApi: SpotifyPlaylistCategoryApi,
+        val spotifyAuthService: SpotifyAuthService
 ) {
 
-    fun getPlaylistsByCategory(playlistCategory: PlaylistCategory): Single<List<Playlist>> {
-        return spotifyPlaylistCategoryApi
-                .getPlaylists(playlistCategory.category)
+    fun getPlaylistByCategory(playlistCategory: PlaylistCategory): Single<Playlist> {
+        return getRandomPlaylistByCategory(playlistCategory)
+    }
+
+    private fun getRandomPlaylistByCategory(playlistCategory: PlaylistCategory): Single<Playlist> {
+        return spotifyAuthService.getAuthToken()
+                .flatMap { spotifyPlaylistCategoryApi
+                        .getPlaylists(playlistCategory.category, "Bearer ${it.authToken}") }
+                .map { it.playlists.items[Random().nextInt(it.playlists.items.size)] }
+                .map { Playlist(id = it.id, tracks = emptyList()) }
+    }
+
+    private fun getRandomPlaylists(playlistCategory: PlaylistCategory): Single<List<Playlist>> {
+        return spotifyAuthService.getAuthToken()
+                .flatMap { spotifyPlaylistCategoryApi
+                        .getPlaylists(playlistCategory.category, "Bearer ${it.authToken}") }
                 .map { it.playlists.items }
                 .toObservable()
                 .flatMapIterable { it }

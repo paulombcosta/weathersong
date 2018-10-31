@@ -14,7 +14,7 @@ interface OpenWeatherApi {
     @GET("weather")
     fun getWeatherInfoByLatLong(
             @Query("lat") lat: Double,
-            @Query("lng") lng: Double,
+            @Query("lon") lng: Double,
             @Query("units") units: String = "metric"): Single<OpenWeatherAPIResponse>
 
 }

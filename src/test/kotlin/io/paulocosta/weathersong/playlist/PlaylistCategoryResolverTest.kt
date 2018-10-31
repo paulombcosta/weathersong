@@ -18,22 +18,22 @@ class PlaylistCategoryResolverTest {
 
     @Test
     fun `test playlist resolver should return a party playlist if temperature is above 30 degrees celcius`() {
-        assertThat(playlistResolver.resolvePlaylist(31)).isInstanceOf(PartyPlaylist::class.java)
+        assertThat(playlistResolver.resolvePlaylist(31.0)).isInstanceOf(PartyPlaylist::class.java)
     }
 
     @Test
     fun `test playlist resolver should return a pop playlist if temperature is between 15 and 30 degrees celcius`() {
-        assertThat(playlistResolver.resolvePlaylist(16)).isInstanceOf(PopPlaylist::class.java)
+        assertThat(playlistResolver.resolvePlaylist(16.0)).isInstanceOf(PopPlaylist::class.java)
     }
 
     @Test
     fun `test playlist resolver should return a rock playlist if temperature is between 10 and 14 degrees celcius`() {
-        assertThat(playlistResolver.resolvePlaylist(11)).isInstanceOf(RockPlaylist::class.java)
+        assertThat(playlistResolver.resolvePlaylist(11.0)).isInstanceOf(RockPlaylist::class.java)
     }
 
     @Test
     fun `test playlist resolver should return a classical playlist if temperature is below 10 degrees celcius`() {
-        assertThat(playlistResolver.resolvePlaylist(9)).isInstanceOf(ClassicalPlaylist::class.java)
+        assertThat(playlistResolver.resolvePlaylist(9.0)).isInstanceOf(ClassicalPlaylist::class.java)
     }
 
 }

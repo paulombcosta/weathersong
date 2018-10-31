@@ -1,14 +1,9 @@
 package io.paulocosta.weathersong.controller
 
-import io.paulocosta.weathersong.data.persisted.SpotifyAuthTokenRepository
 import io.paulocosta.weathersong.data.remote.ApiResponse
 import io.paulocosta.weathersong.data.remote.SuccessfulDataApiResponse
 import io.paulocosta.weathersong.data.remote.SuccessfulEmptyResponse
-import io.paulocosta.weathersong.data.remote.openweather.OpenWeatherAPIResponse
-import io.paulocosta.weathersong.data.remote.openweather.OpenWeatherApi
-import io.paulocosta.weathersong.data.remote.spotify.SpotifyPlaylistApi
-import io.paulocosta.weathersong.data.remote.spotify.SpotifyPlaylistCategoryApi
-import io.paulocosta.weathersong.service.SpotifyAuthService
+import io.paulocosta.weathersong.service.SpotifyWeatherPlaylistService
 import io.reactivex.Single
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,55 +11,18 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class PlaylistController @Autowired constructor(
-        val openWeatherApi: OpenWeatherApi,
-        val spotifyAuthService: SpotifyAuthService,
-        val spotifyAuthTokenRepository: SpotifyAuthTokenRepository,
-        val spotifyPlaylistCategoryApi: SpotifyPlaylistCategoryApi,
-        val spotifyPlaylistApi: SpotifyPlaylistApi) {
-
-    @GetMapping("/weather")
-    fun weather(): Single<OpenWeatherAPIResponse> {
-        return openWeatherApi.getWeatherInfoByCityName("London")
-    }
-
-    @GetMapping("/auth")
-    fun auth(): Single<ApiResponse> {
-        return spotifyAuthService.getAuthToken()
-                .map { SuccessfulDataApiResponse(statusCode = 200, data = it) }
-    }
-
-    @GetMapping("/persistence")
-    fun persistenceTest(): Single<ApiResponse> {
-        return Single.just(spotifyAuthTokenRepository.findById(SpotifyAuthTokenRepository.KEY))
-                .map { it.get() }
-                .map { SuccessfulDataApiResponse(statusCode = 200, data = it) }
-    }
-
-    @GetMapping("/playlists")
-    fun playlists(): Single<ApiResponse> {
-        return spotifyPlaylistCategoryApi.getPlaylists("classical")
-                .map {
-                    SuccessfulDataApiResponse(statusCode = 200, data = it)
-                }
-    }
-
-    @GetMapping("/playlist")
-    fun playlist(): Single<ApiResponse> {
-        return spotifyPlaylistApi.getPlaylist("37i9dQZF1DWWEJlAGA9gs0")
-                .map {
-                    SuccessfulDataApiResponse(statusCode = 200, data = it)
-                }
-    }
+class PlaylistController @Autowired constructor(val spotifyWeatherPlaylistService: SpotifyWeatherPlaylistService) {
 
     @GetMapping("/playlist/city/{city_name}")
     fun getPlaylistByCityName(@PathVariable("city_name") cityName: String): Single<ApiResponse> {
-        return Single.just(SuccessfulEmptyResponse(statusCode = 200))
+        return spotifyWeatherPlaylistService.getPlaylistByCityName(cityName)
+                .map { SuccessfulDataApiResponse(statusCode = 200, data = it) }
     }
 
     @GetMapping("/playlist/lat/{lat}/lng/{lng}")
     fun getPlaylistByLatLng(@PathVariable("lat") lat: Double, @PathVariable("lng") lng: Double): Single<ApiResponse> {
-        return Single.just(SuccessfulEmptyResponse(statusCode = 200))
+        return spotifyWeatherPlaylistService.getPlaylistByLatLng(lat, lng)
+                .map { SuccessfulDataApiResponse(statusCode = 200, data = it) }
     }
 
 }

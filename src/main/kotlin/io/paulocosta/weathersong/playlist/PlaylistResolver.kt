@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 @Component
 class PlaylistResolver {
 
-    fun resolvePlaylist(temperature: Int): PlaylistCategory {
+    fun resolvePlaylist(temperature: Double): PlaylistCategory {
         return when {
             temperature > 30 -> PartyPlaylist()
             temperature in 16..29 -> PopPlaylist()
