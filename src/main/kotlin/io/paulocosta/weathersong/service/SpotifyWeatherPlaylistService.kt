@@ -1,6 +1,7 @@
 package io.paulocosta.weathersong.service
 
-import io.paulocosta.weathersong.data.model.Playlist
+import io.paulocosta.weathersong.data.remote.ApiResponse
+import io.paulocosta.weathersong.data.remote.SuccessfulDataApiResponse
 import io.paulocosta.weathersong.playlist.PlaylistResolver
 import io.reactivex.Single
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,18 +15,20 @@ class SpotifyWeatherPlaylistService @Autowired constructor(
         private val spotifyPlaylistTracksService: SpotifyPlaylistTracksService
 ) {
 
-    fun getPlaylistByCityName(cityName: String): Single<Playlist> {
+    fun getPlaylistByCityName(cityName: String): Single<ApiResponse> {
         return openWeatherService.getTemperatureByCityName(cityName)
                 .map { playlistResolver.resolvePlaylist(it.degrees) }
                 .flatMap { spotifyPlaylistCategoryService.getPlaylistByCategory(it) }
                 .flatMap { spotifyPlaylistTracksService.getPlaylistTracks(it.id) }
+                .map { SuccessfulDataApiResponse(200, it) }
     }
 
-    fun getPlaylistByLatLng(lat: Double, lng: Double): Single<Playlist> {
+    fun getPlaylistByLatLng(lat: Double, lng: Double): Single<ApiResponse> {
         return openWeatherService.getTemperatureByLatLng(lat, lng)
                 .map { playlistResolver.resolvePlaylist(it.degrees) }
                 .flatMap { spotifyPlaylistCategoryService.getPlaylistByCategory(it) }
                 .flatMap { spotifyPlaylistTracksService.getPlaylistTracks(it.id) }
+                .map { SuccessfulDataApiResponse(200, it) }
     }
 
 }
