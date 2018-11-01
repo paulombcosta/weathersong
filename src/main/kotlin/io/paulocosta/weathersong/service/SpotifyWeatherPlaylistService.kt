@@ -5,6 +5,7 @@ import io.paulocosta.weathersong.data.remote.SuccessfulDataApiResponse
 import io.paulocosta.weathersong.playlist.PlaylistResolver
 import io.reactivex.Single
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
 @Service
@@ -20,7 +21,7 @@ class SpotifyWeatherPlaylistService @Autowired constructor(
                 .map { playlistResolver.resolvePlaylist(it.degrees) }
                 .flatMap { spotifyPlaylistCategoryService.getPlaylistByCategory(it) }
                 .flatMap { spotifyPlaylistTracksService.getPlaylistTracks(it.id) }
-                .map { SuccessfulDataApiResponse(200, it) }
+                .map { SuccessfulDataApiResponse(HttpStatus.OK.value(), it) }
     }
 
     fun getPlaylistByLatLng(lat: Double, lng: Double): Single<ApiResponse> {
@@ -28,7 +29,7 @@ class SpotifyWeatherPlaylistService @Autowired constructor(
                 .map { playlistResolver.resolvePlaylist(it.degrees) }
                 .flatMap { spotifyPlaylistCategoryService.getPlaylistByCategory(it) }
                 .flatMap { spotifyPlaylistTracksService.getPlaylistTracks(it.id) }
-                .map { SuccessfulDataApiResponse(200, it) }
+                .map { SuccessfulDataApiResponse(HttpStatus.OK.value(), it) }
     }
 
 }

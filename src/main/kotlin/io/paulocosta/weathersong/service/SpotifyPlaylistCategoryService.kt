@@ -26,16 +26,5 @@ class SpotifyPlaylistCategoryService @Autowired constructor(
                 .map { Playlist(id = it.id, tracks = emptyList()) }
     }
 
-    private fun getRandomPlaylists(playlistCategory: PlaylistCategory): Single<List<Playlist>> {
-        return spotifyAuthService.getAuthToken()
-                .flatMap { spotifyPlaylistCategoryApi
-                        .getPlaylists(playlistCategory.category, "Bearer ${it.authToken}") }
-                .map { it.playlists.items }
-                .toObservable()
-                .flatMapIterable { it }
-                .map { Playlist(id = it.id, tracks = emptyList()) }
-                .toList()
-    }
-
 }
 
