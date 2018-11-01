@@ -30,7 +30,7 @@ the geographic coordinates for the location. They can be used as followed:
 (GET) <host>/playlist/lat/{lat}/lng/{lng}
 ```
 
-## Technologies
+## Technologies & Design Considerations
 
 ### Kotlin
 
