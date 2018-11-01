@@ -1,11 +1,11 @@
 version: "3"
 services:
-  postgres:
-    image: mdillon/postgis:9.6-alpine
-    container_name: db
+  app:
+    build: .
+    container_name: app
     ports:
-      - "5432:5432"
+      - "8080:8080"
     environment:
-      POSTGRES_DB: weathersong
-      POSTGRES_USER: weathersong
-      POSTGRES_PASSWORD: weathersong
+      SPOTIFY_CLIENT_ID: 9e33a703059f46a1aac77e3a014d9c77
+      SPOTIFY_CLIENT_SECRET: 11f0a5b15f2e4713a154d6bff43d44a5
+      OPEN_WEATHER_API_KEY: 58390e778a98112037c449f8c3c26464

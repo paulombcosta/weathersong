@@ -1,8 +1,11 @@
 package io.paulocosta.weathersong.service
 
+import io.paulocosta.weathersong.data.cache.SpotifyAuthTokenRepository
 import io.paulocosta.weathersong.data.model.Playlist
 import io.paulocosta.weathersong.data.model.Track
 import io.paulocosta.weathersong.data.remote.spotify.SpotifyPlaylistApi
+import io.paulocosta.weathersong.error.ErrorHandler
+import io.reactivex.Flowable
 import io.reactivex.Single
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -10,7 +13,8 @@ import org.springframework.stereotype.Service
 @Service
 class SpotifyPlaylistTracksService @Autowired constructor(
         val spotifyAuthService: SpotifyAuthService,
-        val spotifyPlaylistApi: SpotifyPlaylistApi
+        val spotifyPlaylistApi: SpotifyPlaylistApi,
+        val spotifyAuthTokenRepository: SpotifyAuthTokenRepository
 ) {
 
     fun getPlaylistTracks(playlistId: String): Single<Playlist> {
@@ -22,6 +26,16 @@ class SpotifyPlaylistTracksService @Autowired constructor(
                 .map { Track(it.track.name) }
                 .toList()
                 .map { Playlist(id = "", tracks = it) }
+                .retryWhen {
+                    it.flatMap {
+                        if (ErrorHandler.isUnauthorized(it)) {
+                            spotifyAuthTokenRepository.deleteAll()
+                            Flowable.just(true)
+                        } else {
+                            Flowable.error(it)
+                        }
+                    }
+                }
     }
 
 }

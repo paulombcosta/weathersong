@@ -14,4 +14,9 @@ object ErrorHandler {
             ErrorApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Unknown error")
         }
     }
+
+    fun isUnauthorized(error: Throwable): Boolean {
+        return error is HttpException && error.code() == HttpStatus.UNAUTHORIZED.value()
+    }
+
 }
